@@ -8,16 +8,48 @@ export const authApi = {
       const response = await api.post("/auth/login", { email, password });
       return response.data;
     } catch (error) {
-      console.error("API request failed:", error);
+      console.error("Auth API error:", error);
+
+      // Handle network errors
       if (error.code === "ECONNABORTED") {
-        throw { message: "Request timeout - server not responding" };
+        throw {
+          success: false,
+          message:
+            "Request timeout - server is not responding. Please check if the server is running.",
+        };
       }
+
       if (error.code === "ERR_NETWORK") {
-        throw { message: "Network error - cannot reach server" };
+        throw {
+          success: false,
+          message:
+            "Network error - cannot reach server at " + api.defaults.baseURL,
+        };
       }
-      throw (
-        error.response?.data || { message: error.message || "Login failed" }
-      );
+
+      if (error.code === "ECONNREFUSED") {
+        throw {
+          success: false,
+          message:
+            "Connection refused - server is not running. Please start the backend server.",
+        };
+      }
+
+      // Handle response errors
+      if (error.response) {
+        throw (
+          error.response.data || {
+            success: false,
+            message: "Login failed",
+          }
+        );
+      }
+
+      // Generic error handling
+      throw {
+        success: false,
+        message: error.message || "Login failed",
+      };
     }
   },
 
@@ -27,7 +59,13 @@ export const authApi = {
       const response = await api.get("/auth/me");
       return response.data;
     } catch (error) {
-      throw error.response?.data || { message: "Failed to fetch user" };
+      console.error("Get user error:", error);
+      throw (
+        error.response?.data || {
+          success: false,
+          message: "Failed to fetch user",
+        }
+      );
     }
   },
 

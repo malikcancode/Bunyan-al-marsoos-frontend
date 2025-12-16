@@ -5,10 +5,10 @@ import axios from "axios";
 // ============================================
 
 // Production URL
-const API_URL = "https://cms-backend-production-63bd.up.railway.app/api";
+// const API_URL = "https://cms-backend-production-63bd.up.railway.app/api";
 
 // Local URL (uncomment for local development)
-// const API_URL = "http://localhost:5000/api";
+const API_URL = "http://localhost:5000/api";
 
 // ============================================
 
@@ -18,7 +18,7 @@ const api = axios.create({
   headers: {
     "Content-Type": "application/json",
   },
-  timeout: 60000, // Increased to 60 seconds for serverless cold starts
+  timeout: 15000, // Reduced to 15 seconds - requests should fail fast if server is down
   withCredentials: true, // Enable sending cookies for CSRF protection
   maxRedirects: 5, // Limit redirects
   validateStatus: (status) => status >= 200 && status < 300,

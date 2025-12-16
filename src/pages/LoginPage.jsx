@@ -31,7 +31,15 @@ export default function LoginPage() {
       }
     } catch (err) {
       console.error("Login error:", err);
-      setError(err.message || "Invalid credentials. Please try again.");
+
+      // Handle specific error types
+      if (err.success === false) {
+        setError(err.message || "Login failed");
+      } else if (err.message) {
+        setError(err.message);
+      } else {
+        setError("Invalid credentials. Please try again.");
+      }
     } finally {
       setLoading(false);
     }
@@ -56,7 +64,7 @@ export default function LoginPage() {
               <FiLock className="w-6 h-6 text-primary-foreground" />
             </div>
             <h1 className="text-3xl font-bold text-foreground">
-              YM CONSTRUCTIONS
+              BUNYAN AL MARSOOS CONSTRUCTIONS PVT LTD
             </h1>
             <p className="text-muted-foreground text-sm mt-2">
               Construction Management System
